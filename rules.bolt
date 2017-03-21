@@ -1,0 +1,55 @@
+path /quotes {
+    read() { true }
+}
+
+path /quotes/{id} is Quote {
+    write() { auth != null}
+}
+
+type Quote {
+    validate() {
+        (this == null && prior(this.quote.posted_by) == auth.uid) ||
+        (this != null)
+    }
+    quote: QuoteData,
+    votes: VoteData
+}
+
+type QuoteData {
+    validate() {
+        prior(this) == null && 
+        this != null && 
+        this.posted_by == auth.uid
+    }
+    body: String,
+    author: String,
+    posted_by: String,
+    created: CurrentTimestamp
+}
+
+type CurrentTimestamp extends Number {
+  validate() { this == now }
+}
+
+type VoteData {
+    validate() { 
+        (prior(this) == null && this.count == 0) ||
+        (   
+                (prior(this.count) == this.count + 1 || prior(this.count) == this.count - 1) &&
+                (
+                    (prior(this.voters[auth.uid]) != "Upvote" && this.voters[auth.uid] == "Upvote") ||
+                    (prior(this.voters[auth.uid]) == "Upvote" && this.voters[auth.uid] == "Downvote")
+                )
+        )
+    }
+    count: Number,
+    voters: Map<UserId, Vote>
+}
+
+type UserId extends String {
+    validate() { this == auth.uid }
+}
+
+type Vote extends String {
+    validate() { this == "Upvote" || this == "Downvote" }
+}

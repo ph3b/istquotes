@@ -1,0 +1,42 @@
+{
+  "name": "react-hot-loader-minimal-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --hot --history-api-fallback --open",
+    "test": "./node_modules/jest/bin/jest.js tests",
+    "rules": "node generateRules.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wkwiatek/react-hot-loader-minimal-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wkwiatek/react-hot-loader-minimal-boilerplate/issues"
+  },
+  "homepage": "https://github.com/wkwiatek/react-hot-loader-minimal-boilerplate#readme",
+  "dependencies": {
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "jest": "^19.0.2",
+    "re-base": "^2.6.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-icons": "^2.2.3",
+    "react-materialize": "^0.18.1",
+    "targaryen": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "react-hot-loader": "^3.0.0-beta.6",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  }
+}
