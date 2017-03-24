@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { AppContainer } from "react-hot-loader";
-
+import "antd/dist/antd.css";
 import App from "./containers/AppContainer";
 
 const render = Component => {

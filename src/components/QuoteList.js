@@ -1,27 +1,15 @@
-/* @flow */
+// @flow
 import React from "react";
 import { Row, Col, Card } from "react-materialize";
-import QuoteListCard from "./QuoteListCard";
+import QuoteListCard from "./QuoteCard";
+import type { Quote } from "../types";
+import FlipMove from "react-flip-move";
 
-type props = {
+type Props = {
   quotes: Array<Quote>,
   currentUserId: string,
   removeQuote: (key: string) => void,
-  didUpvote: (key: string) => void,
-  didDownvote: (key: string) => void
-};
-
-export type Quote = {
-  key: string,
-  quote: {
-    body: string,
-    author: string,
-    posted_by: string
-  },
-  votes: {
-    count: number,
-    voters: { [key: string]: "Upvote" | "Downvote" }
-  }
+  didClickVote: (key: string) => void
 };
 
 const QuoteList = (
@@ -29,26 +17,31 @@ const QuoteList = (
     quotes,
     currentUserId,
     removeQuote,
-    didUpvote,
-    didDownvote
-  }: props
+    didClickVote
+  }: Props
 ) => {
   const didClickRemove = (key: string) => {
     const didConfirm = window.confirm("Are you sure you want to remove the quote?");
     if (didConfirm) removeQuote(key);
   };
+  const reverseQuotes = quotes.slice().reverse();
   return (
     <Row>
-      {quotes.map(quote => (
-        <QuoteListCard
-          key={quote.key}
-          didClickRemoveQuote={didClickRemove}
-          quote={quote}
-          didDownvote={didDownvote}
-          didUpvote={didUpvote}
-          postedByCurrentUser={currentUserId === quote.quote.posted_by}
-        />
-      ))}
+      <FlipMove duration={500} easing="ease-out">
+        {reverseQuotes.map(quote => {
+          const isVotedByUser = quote.votes && quote.votes[currentUserId] ? true : false;
+          return (
+            <QuoteListCard
+              key={quote.key}
+              didClickRemoveQuote={didClickRemove}
+              quote={quote}
+              didClickVote={didClickVote}
+              isVotedByUser={isVotedByUser}
+              postedByCurrentUser={currentUserId === quote.posted_by}
+            />
+          );
+        })}
+      </FlipMove>
     </Row>
   );
 };

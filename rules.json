@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "quotes": {
+      ".read": "true",
+      "$id": {
+        ".validate": "newData.hasChildren(['body', 'author', 'posted_by', 'created']) && data.val() == null && newData.val() != null && newData.child('posted_by').val() == auth.uid",
+        "body": {
+          ".validate": "newData.isString()"
+        },
+        "author": {
+          ".validate": "newData.isString()"
+        },
+        "posted_by": {
+          ".validate": "newData.isString()"
+        },
+        "created": {
+          ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".write": "auth != null"
+      }
+    },
+    "votes": {
+      ".read": "true",
+      "$quoteId": {
+        "$uid": {
+          ".validate": "data.val() == null && newData.val() == true || data.val() == true && newData.val() == null",
+          ".write": "auth != null && auth.uid == $uid && newData.parent().parent().parent().child('quotes').child($quoteId).val() != null"
+        }
+      }
+    }
+  }
+}

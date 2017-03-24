@@ -2,24 +2,21 @@ path /quotes {
     read() { true }
 }
 
+path /votes {
+    read() { true }
+}
+
 path /quotes/{id} is Quote {
-    write() { auth != null}
+    write() { auth != null }
+}
+
+path /votes/{quoteId}/{uid} is VoteData {
+    write() { auth != null && auth.uid == uid && root.quotes[quoteId] != null }
 }
 
 type Quote {
     validate() {
-        (this == null && prior(this.quote.posted_by) == auth.uid) ||
-        (this != null)
-    }
-    quote: QuoteData,
-    votes: VoteData
-}
-
-type QuoteData {
-    validate() {
-        prior(this) == null && 
-        this != null && 
-        this.posted_by == auth.uid
+        prior(this) == null && this != null && this.posted_by == auth.uid
     }
     body: String,
     author: String,
@@ -32,24 +29,9 @@ type CurrentTimestamp extends Number {
 }
 
 type VoteData {
-    validate() { 
-        (prior(this) == null && this.count == 0) ||
-        (   
-                (prior(this.count) == this.count + 1 || prior(this.count) == this.count - 1) &&
-                (
-                    (prior(this.voters[auth.uid]) != "Upvote" && this.voters[auth.uid] == "Upvote") ||
-                    (prior(this.voters[auth.uid]) == "Upvote" && this.voters[auth.uid] == "Downvote")
-                )
-        )
+    validate() {
+        (prior(this) == null && this == true) ||
+        (prior(this) == true && this == null)
     }
-    count: Number,
-    voters: Map<UserId, Vote>
 }
 
-type UserId extends String {
-    validate() { this == auth.uid }
-}
-
-type Vote extends String {
-    validate() { this == "Upvote" || this == "Downvote" }
-}
